@@ -1,0 +1,15 @@
+# Specification-curve grid. Each axis overrides keys in default.yaml.
+# The full product is 6 x 2 x 2 x 2 x 2 = 96 specifications per subject-block-ROI.
+
+fit_range_hz:
+  narrow_low:   [30, 45]
+  narrow:       [30, 95]           # stops short of the 100 Hz harmonic; truncates broad gamma peaks
+  primary:      [30, 120]
+  broad:        [3, 120]           # needs knee mode to be sane
+  ray:          [104, 190]         # Biswas/Aggarwal/Ray window
+  very_broad:   [3, 190]
+
+aperiodic_mode: [fixed, knee]
+method: [specparam, irasa]
+reference: [average, csd]
+ica_clean: [true, false]

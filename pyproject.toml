@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brainmaxxing"
+version = "0.1.0"
+description = "Periodic/aperiodic separation of meditation gamma in ds003969 (state x trait)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Ananya Pandey", email = "pandeyananya321@gmail.com" }]
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "pyyaml",
+    "mne>=1.8",
+    "mne-bids>=0.16",
+    "mne-icalabel>=0.7",
+    "onnxruntime",
+    "specparam==2.0.0rc7",
+    "yasa>=0.6",
+    "statsmodels>=0.14",
+    "pingouin>=0.5",
+    "openneuro-py",
+    "joblib",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[tool.setuptools.packages.find]
+include = ["brainmaxxing*"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,106 @@
+# BrainMaxxing default analysis configuration.
+# Every number here is a decision. The multiverse config varies the ones that matter.
+
+dataset:
+  id: ds003969
+  snapshot: "1.0.0"
+  bids_root: C:/Users/offto/BrainMaxxingData/ds003969   # keep raw data OUT of OneDrive (sync thrashes on GB-scale writes)
+  derivatives: C:/Users/offto/BrainMaxxingData/derivatives
+  tables: results/tables
+  qc: results/qc
+  # Four blocks per subject, each ~10 min, eyes closed, no events file.
+  blocks:
+    med1breath: { condition: meditation, run: 1 }
+    think1:     { condition: thinking,   run: 1 }
+    med2:       { condition: meditation, run: 2 }
+    think2:     { condition: thinking,   run: 2 }
+
+preprocess:
+  montage: biosemi64
+  resample_hz: 512                 # keeps Nyquist at 256 Hz so 104-190 Hz fit is possible
+  highpass_hz: 1.0                 # ICLabel expects >= 1 Hz high-pass
+  lowpass_hz: null                 # none; the spectrum is analysed up to fmax below
+  line_freq_hz: 50
+  notch: false                     # default: no notch; line harmonics are interpolated in the PSD
+  reference: average               # average | csd
+  bad_channel_zscore: 4.0          # channels with robust log-variance |z| above this are interpolated
+  bad_channel_ptp_uv: 300.0        # ... or with median 2 s peak-to-peak above this (after 1 Hz high-pass)
+  max_bad_channels: 16             # more than this (25 %) and the block is rejected
+  crop_edges_s: 5.0                # drop first/last seconds of each block
+  ica:
+    method: infomax                # extended infomax, as required by ICLabel
+    n_components: 0.999            # explained-variance rank; average ref removes one rank
+    fit_sfreq_hz: 256              # ICA is fitted on a 1-100 Hz copy resampled to this rate
+    label_threshold: 0.80          # ICLabel probability to reject a component
+    reject_labels: [eye blink, muscle artifact, heart beat, line noise, channel noise]
+    random_state: 97
+  epochs:
+    length_s: 2.0
+    overlap_s: 0.0
+    reject_ptp_uv: 150.0           # peak-to-peak threshold on any EEG channel, applied AFTER ICA cleaning
+    flat_ptp_uv: 0.5               # epochs where any channel is flatter than this are dropped (dead signal)
+    min_epochs: 30                 # a block-variant with fewer surviving epochs (60 s) is excluded
+  emg_proxy:
+    channels: [T7, T8, FT7, FT8, TP7, TP8]
+    band_hz: [70, 200]             # computed on UNcleaned data, before ICA
+
+spectra:
+  method: welch
+  n_fft: 1024                      # 0.5 Hz resolution at 512 Hz
+  average: median                  # robust to residual bursts
+  fmin: 1.0
+  fmax: 250.0
+  line_interp_halfwidth_hz: 2.0    # bins within +/- this of 50, 100, 150, 200 Hz are interpolated in log space
+  # Non-mains equipment lines found in pilot QC (odd harmonics of 16 Hz; 80 and 112 Hz present in ~50 % of blocks)
+  extra_line_hz: [80, 112, 144, 176, 208, 240]
+  extra_line_halfwidth_hz: 1.0
+  rois:
+    parieto_occipital: [P1, P3, P5, P7, P9, PO7, PO3, O1, Iz, Oz, POz, Pz, P2, P4, P6, P8, P10, PO8, PO4, O2]
+    frontal: [Fp1, AF7, AF3, F1, F3, F5, F7, Fpz, Fp2, AF8, AF4, AFz, Fz, F2, F4, F6, F8]
+    central: [FC1, C1, C3, CP1, CPz, Cz, FCz, FC2, C2, C4, CP2]
+    temporal: [FT7, T7, TP7, FT8, T8, TP8]
+
+parameterize:
+  gamma_band_hz: [60, 110]         # Braboszcz et al. 2017 reporting band
+  specparam:
+    fit_range_hz: [30, 120]        # primary. 30-95 truncates a broad gamma peak and biases the exponent by ~-0.25 (see 00_simulate); the 100 Hz harmonic is interpolated
+    aperiodic_mode: fixed
+    peak_width_limits: [2, 30]     # gamma peaks are broad; 2*std upper bound
+    max_n_peaks: 6
+    min_peak_height: 0.10
+    peak_threshold: 2.0
+    min_r2: 0.90                   # fits below this are flagged, not silently used
+    exponent_range: [0.0, 4.0]     # fits outside this are not physiological (dead/flat signal) and flagged
+  irasa:
+    band_hz: [30, 120]
+    win_sec: 4
+    # h_max is bounded by band_max * h_max < (sfreq/2) / h_max; at 512 Hz and 120 Hz that means h_max <= 1.45
+    hset: [1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45]
+
+stats:
+  primary_roi: parieto_occipital
+  exclude_groups: [tm]             # 4 undocumented 'tm' participants; not in the published 3-tradition design
+  # 2x2: meditator (trait, between) x condition (state, within), block order as covariate
+  formula: "{dv} ~ meditator * condition + first_session"
+  groups: subject
+  equivalence_bounds_sd: 0.5       # TOST bounds in pooled-SD units; 0.3 is underpowered at n=74/24
+  alpha: 0.05
+
+simulation:
+  n_per_group: 40
+  freq_range_hz: [3, 200]
+  freq_res_hz: 0.5
+  noise_level: 0.02
+  base_aperiodic: { offset: 1.0, exponent: 1.5 }
+  between_subject_sd: { offset: 0.15, exponent: 0.20 }   # trait-level spread
+  within_subject_sd:  { offset: 0.05, exponent: 0.05 }   # block-to-block drift, same subject
+  base_peaks:
+    - [10.0, 0.6, 2.0]             # alpha: centre, power, std
+    - [20.0, 0.2, 3.0]             # beta
+  scenarios:
+    true_periodic_gamma: { peak: [80.0, 0.25, 8.0] }
+    aperiodic_offset_shift: { offset_delta: 0.15 }
+    aperiodic_exponent_shift: { exponent_delta: -0.25 }
+    both: { peak: [80.0, 0.25, 8.0], exponent_delta: -0.25 }
+    no_change: {}
+  seed: 2026

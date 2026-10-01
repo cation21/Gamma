@@ -1,0 +1,25 @@
+# environment
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# raw data and heavy derivatives (never commit)
+data/
+results/derivatives/
+*.bdf
+*.fif
+*.npz
+
+# keep small summary tables
+!results/tables/
+!results/tables/*.csv
+!results/qc/
+!results/qc/*.json
+
+# OS
+.DS_Store
+Thumbs.db
+results/*.log
+results/logs/
