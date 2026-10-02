@@ -5,7 +5,7 @@ Is the meditation gamma effect an oscillation or a broadband shift?
 A re-analysis of OpenNeuro [ds003969](https://openneuro.org/datasets/ds003969) (Braboszcz,
 Hahusseau & Delorme 2017; 98 participants, three meditation traditions plus controls,
 eyes-closed meditation vs thinking) using spectral parameterisation (specparam / FOOOF) to
-separate periodic and aperiodic components of the reported 60–110 Hz gamma increase — and to
+separate periodic and aperiodic components of the reported 60–110 Hz gamma increase, and to
 test, in one dataset, whether the *state* (Jerbi lab, MEG) and *trait* (Ray lab, EEG) aperiodic
 findings actually conflict.
 
