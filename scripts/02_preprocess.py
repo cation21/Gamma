@@ -16,9 +16,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, deriv_path, setup  # noqa: E402
-from brainmaxxing.data import available_blocks, load_raw  # noqa: E402
-from brainmaxxing.preprocess import preprocess_block  # noqa: E402
+from medgamma.cli import base_parser, deriv_path, setup  # noqa: E402
+from medgamma.data import available_blocks, load_raw  # noqa: E402
+from medgamma.preprocess import preprocess_block  # noqa: E402
 
 log = logging.getLogger("02_preprocess")
 

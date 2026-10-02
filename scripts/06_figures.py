@@ -15,11 +15,11 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, deriv_path, setup  # noqa: E402
-from brainmaxxing.data import processed_blocks, block_metadata, load_participants  # noqa: E402
-from brainmaxxing.plots import group_spectra, interaction_plot, specification_curve  # noqa: E402
-from brainmaxxing.spectra import clean_spectrum, roi_spectrum  # noqa: E402
-from brainmaxxing.stats import subject_means  # noqa: E402
+from medgamma.cli import base_parser, deriv_path, setup  # noqa: E402
+from medgamma.data import processed_blocks, block_metadata, load_participants  # noqa: E402
+from medgamma.plots import group_spectra, interaction_plot, specification_curve  # noqa: E402
+from medgamma.spectra import clean_spectrum, roi_spectrum  # noqa: E402
+from medgamma.stats import subject_means  # noqa: E402
 
 log = logging.getLogger("06_figures")
 

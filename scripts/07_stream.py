@@ -18,10 +18,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, setup  # noqa: E402
-from brainmaxxing.data import (available_blocks, block_path, download, ensure_complete,  # noqa: E402
+from medgamma.cli import base_parser, setup  # noqa: E402
+from medgamma.data import (available_blocks, block_path, download, ensure_complete,  # noqa: E402
                                load_participants)
-from brainmaxxing.pipeline import (ALL_VARIANTS, delete_raw, process_block,  # noqa: E402
+from medgamma.pipeline import (ALL_VARIANTS, delete_raw, process_block,  # noqa: E402
                                    subject_outputs_present)
 
 log = logging.getLogger("07_stream")
@@ -39,7 +39,7 @@ def main():
     # Subject list comes from participants.tsv (downloaded on first call), not from disk.
     root = Path(cfg["dataset"]["bids_root"])
     if not (root / "participants.tsv").exists():
-        from brainmaxxing.data import download_with_retry
+        from medgamma.data import download_with_retry
         download_with_retry(cfg, [])
     subjects = args.subjects or load_participants(cfg)["subject"].tolist()
     if args.n_first:

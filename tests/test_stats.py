@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from brainmaxxing.config import load_config
-from brainmaxxing.stats import (dose_response, emg_confound, mixed_2x2, state_tost, subject_means,
+from medgamma.config import load_config
+from medgamma.stats import (dose_response, emg_confound, mixed_2x2, state_tost, subject_means,
                                 trait_tost)
 
 

@@ -11,9 +11,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser  # noqa: E402
-from brainmaxxing.config import load_config  # noqa: E402
-from brainmaxxing.data import download  # noqa: E402
+from medgamma.cli import base_parser  # noqa: E402
+from medgamma.config import load_config  # noqa: E402
+from medgamma.data import download  # noqa: E402
 
 
 def main():

@@ -1,4 +1,4 @@
-# The meditation 'gamma effect' has no gamma in it
+# Gamma(A re-analysis of OpenNeuro [ds003969])
 
 Is the meditation gamma effect an oscillation or a broadband shift?
 
@@ -10,7 +10,6 @@ test, in one dataset, whether the *state* (Jerbi lab, MEG) and *trait* (Ray lab,
 findings actually conflict.
 
 Presented as a poster at CuttingGardens 2026, IIT Mandi (Ananya Pandey).
-The poster and paper sources are kept outside this repository.
 
 ## Poster
 

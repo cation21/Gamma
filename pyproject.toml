@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "brainmaxxing"
+name = "medgamma"
 version = "0.1.0"
 description = "Periodic/aperiodic separation of meditation gamma in ds003969 (state x trait)"
 readme = "README.md"
@@ -32,7 +32,7 @@ dependencies = [
 dev = ["pytest", "ruff"]
 
 [tool.setuptools.packages.find]
-include = ["brainmaxxing*"]
+include = ["medgamma*"]
 
 [tool.ruff]
 line-length = 100

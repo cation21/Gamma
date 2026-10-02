@@ -19,9 +19,9 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, deriv_path, setup  # noqa: E402
-from brainmaxxing.data import available_blocks  # noqa: E402
-from brainmaxxing.spectra import (build_variant, compute_psd, interpolate_line_noise,  # noqa: E402
+from medgamma.cli import base_parser, deriv_path, setup  # noqa: E402
+from medgamma.data import available_blocks  # noqa: E402
+from medgamma.spectra import (build_variant, compute_psd, interpolate_line_noise,  # noqa: E402
                                   irasa_components)
 
 log = logging.getLogger("03_spectra")

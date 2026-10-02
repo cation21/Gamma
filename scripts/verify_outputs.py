@@ -14,8 +14,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, setup  # noqa: E402
-from brainmaxxing.data import processed_blocks  # noqa: E402
+from medgamma.cli import base_parser, setup  # noqa: E402
+from medgamma.data import processed_blocks  # noqa: E402
 
 RACE_MARKERS = ("not found", "being used by another process", "PermissionError", "Errno 2")
 

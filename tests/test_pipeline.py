@@ -4,10 +4,10 @@ import numpy as np
 import pytest
 from specparam.sim import sim_power_spectrum
 
-from brainmaxxing.config import apply_overrides, load_config
-from brainmaxxing.parameterize import FIT_COLUMNS, fit_spectrum
-from brainmaxxing.simulate import cohens_d, run_simulation
-from brainmaxxing.spectra import interpolate_line_noise, naive_band_power, roi_spectrum
+from medgamma.config import apply_overrides, load_config
+from medgamma.parameterize import FIT_COLUMNS, fit_spectrum
+from medgamma.simulate import cohens_d, run_simulation
+from medgamma.spectra import interpolate_line_noise, naive_band_power, roi_spectrum
 
 
 @pytest.fixture(scope="module")

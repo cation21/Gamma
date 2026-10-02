@@ -20,11 +20,11 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, deriv_path, setup  # noqa: E402
-from brainmaxxing.config import REPO_ROOT  # noqa: E402
-from brainmaxxing.data import processed_blocks, block_metadata, load_participants  # noqa: E402
-from brainmaxxing.parameterize import fit_many, fit_spectrum, irasa_row  # noqa: E402
-from brainmaxxing.spectra import clean_spectrum, roi_spectrum  # noqa: E402
+from medgamma.cli import base_parser, deriv_path, setup  # noqa: E402
+from medgamma.config import REPO_ROOT  # noqa: E402
+from medgamma.data import processed_blocks, block_metadata, load_participants  # noqa: E402
+from medgamma.parameterize import fit_many, fit_spectrum, irasa_row  # noqa: E402
+from medgamma.spectra import clean_spectrum, roi_spectrum  # noqa: E402
 
 log = logging.getLogger("04_parameterize")
 QC_KEYS = ["emg_proxy_logpower", "ica_muscle_variance_ratio", "ica_n_excluded", "n_epochs_kept",

@@ -9,9 +9,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, setup  # noqa: E402
-from brainmaxxing.plots import simulation_recovery  # noqa: E402
-from brainmaxxing.simulate import run_simulation  # noqa: E402
+from medgamma.cli import base_parser, setup  # noqa: E402
+from medgamma.plots import simulation_recovery  # noqa: E402
+from medgamma.simulate import run_simulation  # noqa: E402
 
 
 def main():

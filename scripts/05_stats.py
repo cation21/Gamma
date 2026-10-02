@@ -18,8 +18,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from brainmaxxing.cli import base_parser, setup  # noqa: E402
-from brainmaxxing.stats import (PRIMARY_DVS, dose_response, emg_confound, mixed_2x2,  # noqa: E402
+from medgamma.cli import base_parser, setup  # noqa: E402
+from medgamma.stats import (PRIMARY_DVS, dose_response, emg_confound, mixed_2x2,  # noqa: E402
                                 state_tost, trait_tost)
 
 log = logging.getLogger("05_stats")
