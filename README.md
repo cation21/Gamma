@@ -1,4 +1,4 @@
-# BrainMaxxing
+# The Gamma Oscillations have no Gamma in it
 
 Is the meditation gamma effect an oscillation or a broadband shift?
 
@@ -11,6 +11,12 @@ findings actually conflict.
 
 Presented as a poster at CuttingGardens 2026, IIT Mandi (Ananya Pandey).
 The poster and paper sources are kept outside this repository.
+
+## Poster
+
+[![Poster: CuttingGardens 2026, IIT Mandi](docs/poster.jpg)](docs/poster.pdf)
+
+Click the image for the full-resolution A0 PDF.
 
 ## Pipeline
 
