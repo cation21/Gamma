@@ -1,4 +1,4 @@
-# The Gamma Oscillations have no Gamma in it
+# The meditation 'gamma effect' has no gamma in it
 
 Is the meditation gamma effect an oscillation or a broadband shift?
 
