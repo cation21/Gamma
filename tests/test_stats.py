@@ -71,3 +71,15 @@ def test_emg_confound_runs(cfg, table):
     out = emg_confound(table, "exponent", cfg)
     assert set(out.model) == {"unadjusted", "emg_adjusted"}
     assert (out.term == "emg_proxy_logpower").sum() == 1
+
+
+def test_adjust_pvalues_matches_hand_computed_bh_and_holm():
+    import pandas as pd
+    from medgamma.stats import adjust_pvalues
+    m = pd.DataFrame({"dv": ["exponent", "offset", "naive_gamma_power", "aperiodic_gamma_power", "irasa_exponent"],
+                      "term": ["meditator:condition[T.meditation]"] * 5,
+                      "p": [0.0133, 0.0129, 0.148, 0.1405, 0.019]})
+    a = adjust_pvalues(m).set_index("dv")
+    assert abs(a.loc["exponent", "p_fdr_bh"] - 0.0133 * 4 / 2) < 1e-9
+    assert abs(a.loc["exponent", "p_holm"] - 0.0129 * 4) < 1e-9   # Holm is monotone: takes the first step's value
+    assert pd.isna(a.loc["irasa_exponent", "p_fdr_bh"])           # cross-check, not in the family

@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import pingouin as pg
 import statsmodels.formula.api as smf
+from statsmodels.stats.multitest import multipletests
 
 PRIMARY_DVS = ["exponent", "offset", "periodic_gamma_power", "aperiodic_gamma_power",
                "naive_gamma_power"]
@@ -46,6 +47,27 @@ def mixed_2x2(df: pd.DataFrame, dv: str, cfg: dict, covariates: list[str] | None
     out.insert(0, "dv", dv)
     out["n_obs"] = int(res.nobs)
     out["n_subjects"] = d[cfg["stats"]["groups"]].nunique()
+    return out
+
+
+KEY_TERMS = ["meditator", "condition[T.meditation]", "meditator:condition[T.meditation]"]
+
+
+def adjust_pvalues(mixed: pd.DataFrame, family: list[str] = PRIMARY_DVS) -> pd.DataFrame:
+    """Add Benjamini-Hochberg FDR and Holm-adjusted p-values for the key model terms.
+
+    The family is the primary measures that were fitted, corrected separately for each term
+    (trait, state, interaction). IRASA measures are cross-checks of the specparam exponent and
+    periodic power, so they are left out of the family and get no adjusted p.
+    """
+    out = mixed.copy()
+    out["p_fdr_bh"] = np.nan
+    out["p_holm"] = np.nan
+    sel = out.dv.isin(family) & out.term.isin(KEY_TERMS)
+    for _, idx in out[sel].groupby("term").groups.items():
+        p = out.loc[idx, "p"].to_numpy()
+        out.loc[idx, "p_fdr_bh"] = multipletests(p, method="fdr_bh")[1]
+        out.loc[idx, "p_holm"] = multipletests(p, method="holm")[1]
     return out
 
 

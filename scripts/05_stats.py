@@ -19,7 +19,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from medgamma.cli import base_parser, setup  # noqa: E402
-from medgamma.stats import (PRIMARY_DVS, dose_response, emg_confound, mixed_2x2,  # noqa: E402
+from medgamma.stats import (PRIMARY_DVS, adjust_pvalues, dose_response, emg_confound, mixed_2x2,  # noqa: E402
                                 state_tost, trait_tost)
 
 log = logging.getLogger("05_stats")
@@ -49,12 +49,12 @@ def main():
             parts.append(mixed_2x2(df, dv, cfg))
         except Exception as exc:  # zero-variance DV, singular Hessian, non-convergence
             log.warning("mixed model for %s skipped: %s", dv, str(exc)[:120])
-    mixed = pd.concat(parts, ignore_index=True)
+    mixed = adjust_pvalues(pd.concat(parts, ignore_index=True))
     mixed.to_csv(tables / "stats_mixed_2x2.csv", index=False)
     key = mixed[mixed.term.isin(["meditator", "condition[T.meditation]",
                                  "meditator:condition[T.meditation]"])]
     print("\n=== Mixed model, ROI", roi, "===")
-    print(key[["dv", "term", "estimate", "ci_low", "ci_high", "p"]].round(4).to_string(index=False))
+    print(key[["dv", "term", "estimate", "ci_low", "ci_high", "p", "p_fdr_bh", "p_holm"]].round(4).to_string(index=False))
 
     def safe(fn, *a):
         try:
