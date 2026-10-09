@@ -3,11 +3,22 @@
 from __future__ import annotations
 
 import copy
+import os
 from pathlib import Path
 
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DATA_DIR = Path.home() / "GammaData"
+
+
+def _expand(value: str) -> Path:
+    """Expand ${VARS} and ~ in a config path; GAMMA_DATA defaults to ~/GammaData."""
+    env = {**os.environ}
+    env.setdefault("GAMMA_DATA", str(DEFAULT_DATA_DIR))
+    for k, v in env.items():
+        value = value.replace(f"${{{k}}}", v)
+    return Path(os.path.expanduser(value))
 
 
 def load_config(path: str | Path = "configs/default.yaml", overrides: dict | None = None) -> dict:
@@ -22,7 +33,7 @@ def load_config(path: str | Path = "configs/default.yaml", overrides: dict | Non
         cfg = yaml.safe_load(f)
 
     for key in ("bids_root", "derivatives", "tables", "qc"):
-        p = Path(cfg["dataset"][key])
+        p = _expand(str(cfg["dataset"][key]))
         cfg["dataset"][key] = str(p if p.is_absolute() else REPO_ROOT / p)
 
     if overrides:

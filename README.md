@@ -115,10 +115,19 @@ Google Drive so the run survives session limits; budget ~15 min per subject on t
 ## Data and storage
 
 ds003969 is released under CC0 and is not committed here; `01_download.py` fetches it to
-`dataset.bids_root` in `configs/default.yaml`. Set `bids_root` and `derivatives` to a local path
-on your machine **outside any cloud-synced folder** (OneDrive, Dropbox): the raw data are ~58 GB
-and the derivatives ~30 GB, and sync clients that lock and re-upload each file as it is written
-slow the pipeline by about two orders of magnitude.
+`dataset.bids_root` in `configs/default.yaml`. Raw data and derivatives go under the directory in
+the `GAMMA_DATA` environment variable (default `~/GammaData`):
+
+```powershell
+setx GAMMA_DATA D:\GammaData        # Windows, persistent (open a new terminal afterwards)
+```
+```bash
+export GAMMA_DATA=/data/gamma        # macOS / Linux
+```
+
+Keep this directory **outside any cloud-synced folder** (OneDrive, Dropbox): the raw data are
+~58 GB and the derivatives ~30 GB, and sync clients that lock and re-upload each file as it is
+written slow the pipeline by about two orders of magnitude.
 
 ## Web walkthrough
 

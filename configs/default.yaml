@@ -4,8 +4,10 @@
 dataset:
   id: ds003969
   snapshot: "1.0.0"
-  bids_root: C:/Users/offto/BrainMaxxingData/ds003969   # keep raw data OUT of OneDrive (sync thrashes on GB-scale writes)
-  derivatives: C:/Users/offto/BrainMaxxingData/derivatives
+  # ${GAMMA_DATA} is an environment variable (default ~/GammaData). Keep it OUT of any cloud-synced
+  # folder such as OneDrive: sync clients thrash on GB-scale writes.
+  bids_root: ${GAMMA_DATA}/ds003969
+  derivatives: ${GAMMA_DATA}/derivatives
   tables: results/tables
   qc: results/qc
   # Four blocks per subject, each ~10 min, eyes closed, no events file.
