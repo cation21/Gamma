@@ -147,9 +147,9 @@ npm install
 npm run dev
 ```
 
-**Deploying to Vercel:** import the repository with the default settings. The root
-[vercel.json](vercel.json) installs and builds `web/` and serves `web/dist`. No environment
-variables are needed. (Alternatively, set **Root Directory** to `web` and let Vercel detect Vite.)
+**Deploying to Vercel:** import the repository and set **Root Directory** to `web`. Vercel then
+uses [web/vercel.json](web/vercel.json): Vite, `npm run build`, output `dist`, Node 22. No
+environment variables are needed.
 
 ## Repository layout
 
