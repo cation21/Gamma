@@ -149,7 +149,7 @@ export default function App() {
           <p>Why: this separates rhythm from background. Primary fit 30 to 120 Hz (narrower ranges cut off a broad gamma peak and biased the exponent by about −0.25 in simulation). Peaks must be 2 to 30 Hz wide, at least 0.10 log units high, threshold 2. Peaks pinned at the width limit are not counted.</p>
           <Math_ note="20 fits failed this check. Three outputs per spectrum: naive, periodic, and aperiodic gamma power.">R² = 1 − Σ(y − ŷ)² / Σ(y − ȳ)², keep fit if R² ≥ 0.90</Math_>
         </Step>
-        <Step title="5. Statistics (05_stats.py, stats.py): state, trait, interaction">
+        <Step title="5. Statistics (05_stats.py, stats.py): state, trait, interaction, years of practice">
           <p>Why: each person has several blocks, so a mixed model gives each person their own baseline. The interaction tests whether meditation changes the spectrum differently in meditators and controls.</p>
           <Math_ note={<>u<sub>i</sub> ~ N(0, σ²<sub>u</sub>) is the per-person random intercept.</>}>y<sub>ij</sub> = β<sub>0</sub> + β<sub>1</sub>Trait<sub>i</sub> + β<sub>2</sub>State<sub>ij</sub> + β<sub>3</sub>(Trait × State) + β<sub>4</sub>Order + u<sub>i</sub> + ε<sub>ij</sub></Math_>
           <Math_ note="Cohen's d, the effect size used throughout.">d = (x̄<sub>1</sub> − x̄<sub>2</sub>) / s<sub>pooled</sub></Math_>
@@ -218,6 +218,22 @@ export default function App() {
         </div>
         <p>In controls the exponent was steeper during meditation than thinking (+0.099, p = .042). In meditators it barely moved (−0.017, p = .59). The trait main effect was not significant (−0.118, p = .114). Adjusting for muscle proxies did not weaken the trait effect.</p>
         <p><b>Multiple comparisons:</b> correcting each term across the four fitted primary measures, the interaction gives p = .027 with Benjamini-Hochberg FDR but p = .052 with Holm. The interaction therefore holds under FDR control only.<Cite n={13} /></p>
+        <h3>Does the effect depend on years of practice?</h3>
+        <p>Among the 62 meditators with reported practice (2.5 to 56 years, median 10), the analysis asked two separate questions. Years differ strongly by tradition (Himalayan median 22, Isha 5.75, Vipassana 10), so every model is adjusted for tradition. These tests are exploratory.<Cite n={15} /></p>
+        <Table
+          head={["Question", "Measure", "Estimate", "p", "p (FDR)"]}
+          rows={[
+            ["Does the meditation − thinking effect grow with years? (years × state)", "exponent", "+0.011 per doubling", "= .59", "= .72"],
+            ["", "naive gamma power", "−0.013 per doubling", "= .35", "= .72"],
+            ["Is the resting level higher with more years?", <b>naive gamma power</b>, <b>+0.087 per doubling</b>, <b>= .002</b>, <b>= .005</b>],
+            ["", "aperiodic gamma power", "+0.084 per doubling", "= .002", "= .005"],
+            ["", "periodic gamma power", "partial ρ = +0.10", "= .44", "= .55"],
+            ["", "exponent", "−0.062 per doubling", "= .11", "= .15"],
+            ["More than 10 years vs controls", "exponent", "−0.23", "= .013", "= .022"],
+            ["10 years or fewer vs controls", "exponent", "−0.16", "= .092", "= .23"],
+          ]}
+        />
+        <p><b>Reading:</b> experience does not change what happens <em>during</em> meditation: the state effect is flat across years for every measure. What scales with experience is the resting level of 60 to 110 Hz band power, and that increase is entirely <b>aperiodic</b>. Periodic gamma is unrelated to years. This is consistent with the 2017 report that gamma power scaled with practice, and it locates that scaling in the background rather than in an oscillation. The group difference from controls is carried by practitioners with more than 10 years (Holm p = .050, so borderline under the stricter correction).</p>
         <p><b>Equivalence:</b> periodic gamma power was equivalent between groups within ±0.5 SD (p = .041). Exponent and offset equivalence were not established.</p>
         <p><b>Limits:</b> one dataset, preliminary; residual muscle activity cannot be fully excluded in a 30 to 120 Hz fit; the exponent is not a pure E/I readout.</p>
       </Section>

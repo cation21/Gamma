@@ -171,6 +171,31 @@ def main():
             for _, r in ds.iterrows():
                 out.append(f"| {r.dv} | {int(r.n)} | {r.rho:+.2f} | {fmt_p(r.p)} |")
             out.append("")
+        prac = tables / "stats_practice.csv"
+        if prac.exists():
+            pr = pd.read_csv(prac)
+            split = pr.split_years.dropna().iloc[0] if pr.split_years.notna().any() else float("nan")
+            labels = {"years_x_state": "years × state (mixed model, per doubling of years)",
+                      "state_rho_partial": "years vs state effect (Spearman, partial for tradition)",
+                      "long_vs_short_state": f"state effect, > {split:g} vs ≤ {split:g} years (difference)",
+                      "years_level": "years vs level (mixed model, per doubling of years)",
+                      "level_rho_partial": "years vs level (Spearman, partial for tradition)",
+                      "long_vs_controls_trait": f"> {split:g} years vs controls (difference)",
+                      "short_vs_controls_trait": f"≤ {split:g} years vs controls (difference)"}
+            out += ["### Does the effect depend on years of practice? (meditators, exploratory)", "",
+                    "Years of practice differ strongly by tradition, so models and partial correlations "
+                    "adjust for tradition. p(FDR) and p(Holm) correct each analysis across the primary "
+                    "measures; IRASA rows are cross-checks.", "",
+                    "| measure | analysis | estimate | p | p(FDR) | p(Holm) | n |", "|---|---|---|---|---|---|---|"]
+            for dv in ["exponent", "offset", "naive_gamma_power", "aperiodic_gamma_power",
+                       "periodic_gamma_power", "irasa_exponent"]:
+                for key, name in labels.items():
+                    r = pr[(pr.dv == dv) & (pr.analysis == key)]
+                    if len(r):
+                        r = r.iloc[0]
+                        adj = [fmt_p(r[c]) if pd.notna(r[c]) else "–" for c in ("p_fdr_bh", "p_holm")]
+                        out.append(f"| {dv} | {name} | {r.estimate:+.3f} | {fmt_p(r.p)} | {adj[0]} | {adj[1]} | {int(r.n)} |")
+            out.append("")
     else:
         out += ["## Mixed model", "", "Not run yet (needs ≥ 4 subjects per group; run `05_stats.py`).", ""]
 

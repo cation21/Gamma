@@ -40,6 +40,13 @@ parieto-occipital ROI.
   barely changed.
 - Periodic gamma power was equivalent between groups within ±0.5 SD (TOST p = .041).
 - Adjusting for scalp-muscle (EMG) proxies did not weaken the trait effect on the exponent.
+- **Years of practice (meditators, exploratory, adjusted for tradition):** the meditation-vs-thinking
+  effect does **not** depend on experience (years × state on the exponent p = .59; no measure
+  significant). The resting *level* of gamma band power does: naive gamma power rises by 0.087 log10
+  units per doubling of years (p = .002; FDR .005, Holm .009), and the increase is entirely
+  aperiodic; periodic gamma power is unrelated to years (partial ρ = .10, p = .44). Practitioners with
+  more than 10 years differed from controls (exponent −0.23, FDR p = .022; Holm .050), whereas those
+  with 10 years or fewer did not (FDR p = .23). Results are in `results/tables/stats_practice.csv`.
 
 The ground-truth simulation shows that the method attributes an effect to the correct component
 (a pure slope change moved naive band power by d = +3.04 and periodic power by 0.00). It does not
@@ -56,7 +63,7 @@ of excitation/inhibition balance. These are preliminary results from a single da
 03_spectra       Welch PSD per preprocessing variant, IRASA on the primary ROI
 04_parameterize  specparam fits per ROI -> long table; optional multiverse and per-channel fits
 05_stats         mixed 2x2 (meditator x condition) with FDR/Holm correction, TOST,
-                 dose-response, EMG-confound, specification curve
+                 dose-response and years-of-practice effects, EMG-confound, specification curve
 06_figures       spectra, interaction plots, specification curves
 07_stream        download -> process -> delete raw, per subject; replaces 01-03 with ~1 GB peak disk
 08_report        write results/REPORT.md from whatever tables exist

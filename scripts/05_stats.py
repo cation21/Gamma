@@ -4,6 +4,7 @@ Reads results/tables/fits_primary.csv (and fits_multiverse.csv if present). Writ
   results/tables/stats_mixed_2x2.csv      mixed-model terms per DV, primary ROI
   results/tables/stats_tost.csv           equivalence tests for trait and state contrasts
   results/tables/stats_dose_response.csv  Spearman rho with years of practice
+  results/tables/stats_practice.csv       does the effect depend on years of practice (meditators)
   results/tables/stats_emg_confound.csv   trait effect with/without EMG covariates
   results/tables/stats_multiverse.csv     mixed-model terms for every specification
 
@@ -19,7 +20,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from medgamma.cli import base_parser, setup  # noqa: E402
-from medgamma.stats import (PRIMARY_DVS, adjust_pvalues, dose_response, emg_confound, mixed_2x2,  # noqa: E402
+from medgamma.stats import (PRIMARY_DVS, adjust_family, adjust_pvalues, practice_effects, dose_response, emg_confound, mixed_2x2,  # noqa: E402
                                 state_tost, trait_tost)
 
 log = logging.getLogger("05_stats")

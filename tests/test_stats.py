@@ -5,8 +5,8 @@ import pandas as pd
 import pytest
 
 from medgamma.config import load_config
-from medgamma.stats import (dose_response, emg_confound, mixed_2x2, state_tost, subject_means,
-                                trait_tost)
+from medgamma.stats import (dose_response, emg_confound, mixed_2x2, practice_effects, state_tost,
+                            subject_means, trait_tost)
 
 
 @pytest.fixture(scope="module")
@@ -83,3 +83,11 @@ def test_adjust_pvalues_matches_hand_computed_bh_and_holm():
     assert abs(a.loc["exponent", "p_fdr_bh"] - 0.0133 * 4 / 2) < 1e-9
     assert abs(a.loc["exponent", "p_holm"] - 0.0129 * 4) < 1e-9   # Holm is monotone: takes the first step's value
     assert pd.isna(a.loc["irasa_exponent", "p_fdr_bh"])           # cross-check, not in the family
+
+
+def test_practice_effects_separates_level_from_state(cfg, table):
+    """Planted: exponent level rises with years (+0.01/yr); the state effect does not depend on years."""
+    r = pd.DataFrame(practice_effects(table, "exponent", cfg)).set_index("analysis")
+    assert r.loc["years_level", "estimate"] > 0 and r.loc["years_level", "p"] < 0.05
+    assert r.loc["years_x_state", "p"] > 0.05
+    assert r.loc["long_vs_short_state", "n_long"] + r.loc["long_vs_short_state", "n_short"] == 24

@@ -116,6 +116,86 @@ def dose_response(df: pd.DataFrame, dv: str) -> dict:
             "p": float(r["p_val"].iloc[0])}
 
 
+def _years_table(df: pd.DataFrame, dv: str) -> pd.DataFrame:
+    """Meditators with known years of practice: per-subject level, state effect and tradition dummies."""
+    sm = subject_means(df, dv)
+    sm = sm[sm.meditator].dropna(subset=["years_of_practice"]).copy()
+    sm["avg"] = sm[["meditation", "thinking"]].mean(axis=1)
+    for t in sorted(sm.tradition.unique())[1:]:
+        sm[f"trad_{t}"] = (sm.tradition == t).astype(float)
+    return sm
+
+
+def practice_effects(df: pd.DataFrame, dv: str, cfg: dict) -> list[dict]:
+    """Does the effect depend on years of practice? Meditators only; all tests exploratory.
+
+    - years_x_state: mixed model dv ~ log2(years) * condition + first_session + tradition + (1|subject);
+      the interaction asks whether the meditation - thinking difference changes with experience
+      (per doubling of years of practice).
+    - state_rho / state_rho_partial: Spearman of years with each subject's state effect
+      (meditation - thinking), raw and partialled for tradition (years differ strongly by tradition).
+    - level_rho_partial: as the existing dose-response, partialled for tradition.
+    - long_vs_short: state effect in meditators above vs at/below the median years (Mann-Whitney U),
+      and each subgroup's trait contrast against controls (Welch t, condition-averaged).
+    """
+    rows = []
+    d = _prepare(df[df.meditator].dropna(subset=["years_of_practice"]))
+    d["log2_years"] = np.log2(d["years_of_practice"])
+    trad = " + C(tradition)" if d.tradition.nunique() > 1 else ""
+    try:
+        res = smf.mixedlm(f"{dv} ~ log2_years * condition + first_session{trad}", d,
+                          groups=d[cfg["stats"]["groups"]]).fit(reml=False, method=["lbfgs"])
+        ci = res.conf_int()
+        for term, name in [("log2_years", "years_level"), ("log2_years:condition[T.meditation]", "years_x_state")]:
+            rows.append({"dv": dv, "analysis": name, "estimate": float(res.params[term]),
+                         "ci_low": float(ci.loc[term, 0]), "ci_high": float(ci.loc[term, 1]),
+                         "p": float(res.pvalues[term]), "n": int(d.subject.nunique())})
+    except np.linalg.LinAlgError:  # near-constant DV (periodic power is ~0 in most blocks)
+        pass
+
+    sm = _years_table(df, dv)
+    covar = [c for c in sm if c.startswith("trad_")]
+    st = sm.dropna(subset=["state_diff"])
+    r = pg.corr(st["years_of_practice"], st["state_diff"], method="spearman")
+    rows.append({"dv": dv, "analysis": "state_rho", "estimate": float(r["r"].iloc[0]),
+                 "p": float(r["p_val"].iloc[0]), "n": int(r["n"].iloc[0])})
+    for name, y, data in [("state_rho_partial", "state_diff", st), ("level_rho_partial", "avg", sm.dropna(subset=["avg"]))]:
+        r = (pg.partial_corr(data, x="years_of_practice", y=y, covar=covar, method="spearman") if covar
+             else pg.corr(data["years_of_practice"], data[y], method="spearman"))
+        ci95 = r["CI95" if "CI95" in r else "CI95%"].iloc[0]
+        rows.append({"dv": dv, "analysis": name, "estimate": float(r["r"].iloc[0]),
+                     "ci_low": float(ci95[0]), "ci_high": float(ci95[1]),
+                     "p": float(r["p_val"].iloc[0]), "n": int(r["n"].iloc[0])})
+
+    med = st["years_of_practice"].median()
+    long_, short = st[st.years_of_practice > med], st[st.years_of_practice <= med]
+    u = pg.mwu(long_["state_diff"], short["state_diff"])
+    rows.append({"dv": dv, "analysis": "long_vs_short_state", "estimate": float(long_.state_diff.mean() - short.state_diff.mean()),
+                 "p": float(u["p_val"].iloc[0]), "n": len(st), "split_years": float(med),
+                 "n_long": len(long_), "n_short": len(short)})
+    ctrl = subject_means(df, dv)
+    ctrl = ctrl[~ctrl.meditator][["meditation", "thinking"]].mean(axis=1).dropna()
+    for name, grp in [("long_vs_controls_trait", long_), ("short_vs_controls_trait", short)]:
+        a = grp[["meditation", "thinking"]].mean(axis=1).dropna()
+        t = pg.ttest(a, ctrl, paired=False)
+        rows.append({"dv": dv, "analysis": name, "estimate": float(a.mean() - ctrl.mean()),
+                     "cohens_d": float(pg.compute_effsize(a, ctrl)), "p": float(t["p_val"].iloc[0]),
+                     "n": len(a), "split_years": float(med)})
+    return rows
+
+
+def adjust_family(table: pd.DataFrame, by: str, family: list[str] = PRIMARY_DVS) -> pd.DataFrame:
+    """BH-FDR and Holm across the primary measures, separately within each level of `by`."""
+    out = table.copy()
+    out["p_fdr_bh"] = np.nan
+    out["p_holm"] = np.nan
+    for _, idx in out[out.dv.isin(family)].groupby(by).groups.items():
+        p = out.loc[idx, "p"].to_numpy()
+        out.loc[idx, "p_fdr_bh"] = multipletests(p, method="fdr_bh")[1]
+        out.loc[idx, "p_holm"] = multipletests(p, method="holm")[1]
+    return out
+
+
 def emg_confound(df: pd.DataFrame, dv: str, cfg: dict) -> pd.DataFrame:
     """Does the trait effect on `dv` survive adjustment for scalp-muscle proxies?"""
     base = mixed_2x2(df, dv, cfg)
