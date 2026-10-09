@@ -27,8 +27,8 @@ export default function PsdExplorer() {
     const Y = (v) => T + ((y1 - v) / (y1 - y0)) * (H - T - B);
     const mut = cssVar("--mut"), acc = cssVar("--acc");
     g.clearRect(0, 0, W, H);
-    g.fillStyle = acc; g.globalAlpha = 0.14; g.fillRect(X(60), T, X(110) - X(60), H - T - B); g.globalAlpha = 1;
-    g.fillStyle = mut; g.font = `${11 * d}px Inter, sans-serif`;
+    g.fillStyle = cssVar("--gold"); g.globalAlpha = 0.22; g.fillRect(X(60), T, X(110) - X(60), H - T - B); g.globalAlpha = 1;
+    g.fillStyle = mut; g.font = `${11 * d}px "Segoe UI", system-ui, sans-serif`;
     g.fillText("gamma band 60 to 110 Hz", X(60) + 4 * d, T + 14 * d);
     g.strokeStyle = cssVar("--line"); g.lineWidth = d;
     g.beginPath(); g.moveTo(L, T); g.lineTo(L, H - B); g.lineTo(W - R, H - B); g.stroke();

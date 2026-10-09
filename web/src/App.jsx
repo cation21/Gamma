@@ -76,11 +76,24 @@ export default function App() {
     <>
       <Progress />
 
-      <section>
-        <p className="kicker">A re-analysis of OpenNeuro ds003969</p>
-        <h1>Periodic vs <em>aperiodic</em> gamma in meditation EEG</h1>
-        <p>A guided walkthrough of the project: the claim, the maths, every pipeline step, the ground-truth test, and the results. Superscript numbers link to the reference list at the bottom. Open the "maths" boxes for formulas and the exact settings used.</p>
-      </section>
+      <header className="hero">
+        <div className="hero-inner">
+          <div className="ribbon">September 2026 | Ananya Pandey</div>
+          <div className="hero-row">
+            <a className="logo logo-left" href="https://sites.google.com/iitmandi.ac.in/cuttinggardens-mandi-2026/home" target="_blank" rel="noopener noreferrer">
+              <img src="/logos/cuttinggardens-2026.png" alt="CuttingGardens 2026" />
+            </a>
+            <div className="title">
+              <h1>Periodic vs <em>aperiodic</em> gamma in meditation EEG</h1>
+            </div>
+            <a className="logo logo-right" href="https://www.iitmandi.ac.in/" target="_blank" rel="noopener noreferrer">
+              <img src="/logos/iit-mandi.png" alt="Indian Institute of Technology Mandi" />
+            </a>
+          </div>
+          <p className="sub">A specparam re-analysis of OpenNeuro ds003969, as a guided walkthrough: the claim, the maths, every pipeline step, the ground-truth test, and the results. Superscript numbers link to the reference list at the bottom. Open the "maths" boxes for formulas and the exact settings used.</p>
+          <p className="presented">Poster presented at <b>CuttingGardens 2026, IIT Mandi</b>.</p>
+        </div>
+      </header>
 
       <Section kicker="1. Background" title={<>Gamma power in <em>meditation EEG</em></>}>
         <p>Gamma here means fast EEG activity, roughly 30 to 110 Hz. Experienced Tibetan practitioners showed high amplitude gamma during compassion meditation<Cite n={1} />. In the dataset used here, three meditation traditions showed higher gamma than controls<Cite n={2} />. "More gamma" means more <b>power</b> in that band. It does not say what produced the extra power.</p>
@@ -217,8 +230,10 @@ export default function App() {
         </ol>
       </section>
 
-      <footer>
-        Ananya Pandey. Poster at CuttingGardens 2026, IIT Mandi. Code: <a href={REPO}>github.com/cation21/Gamma</a> (MIT). Data: <a href="https://openneuro.org/datasets/ds003969">OpenNeuro ds003969</a>.
+      <footer className="site">
+        <div>
+          Ananya Pandey. Poster presented at CuttingGardens 2026, IIT Mandi. Code: <a href={REPO}>github.com/cation21/Gamma</a> (MIT). Data: <a href="https://openneuro.org/datasets/ds003969">OpenNeuro ds003969</a> (CC0).
+        </div>
       </footer>
     </>
   );

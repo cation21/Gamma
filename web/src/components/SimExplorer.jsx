@@ -38,12 +38,12 @@ export default function SimExplorer() {
     const Y = (v) => T + ((y1 - v) / (y1 - y0)) * (H - T - B);
     const mut = cssVar("--mut"), acc = cssVar("--acc"), line = cssVar("--line");
     g.clearRect(0, 0, W, H);
-    g.fillStyle = acc; g.globalAlpha = 0.14; g.fillRect(X(60), T, X(110) - X(60), H - T - B); g.globalAlpha = 1;
+    g.fillStyle = cssVar("--gold"); g.globalAlpha = 0.22; g.fillRect(X(60), T, X(110) - X(60), H - T - B); g.globalAlpha = 1;
     g.strokeStyle = line; g.lineWidth = d; g.setLineDash([3 * d, 4 * d]);
     [30, 120].forEach((f) => { g.beginPath(); g.moveTo(X(f), T); g.lineTo(X(f), H - B); g.stroke(); });
     g.setLineDash([]);
     g.beginPath(); g.moveTo(L, T); g.lineTo(L, H - B); g.lineTo(W - R, H - B); g.stroke();
-    g.fillStyle = mut; g.font = `${11 * d}px Inter, sans-serif`;
+    g.fillStyle = mut; g.font = `${11 * d}px "Segoe UI", system-ui, sans-serif`;
     [3, 10, 30, 100, 200].forEach((f) => g.fillText(String(f), X(f) - 6 * d, H - B + 16 * d));
     g.fillText("Frequency (Hz, log scale)", L + (W - L - R) / 2 - 60 * d, H - 6 * d);
     g.fillText("fit range 30 to 120 Hz", X(30) + 4 * d, T + 12 * d);
